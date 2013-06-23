@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 package Dist::Zilla::Plugin::Test::NewVersion;
-# ABSTRACT: ...
+# ABSTRACT: Generate a test that checks a new version has been assigned
 
 use Moose;
 with
@@ -102,23 +102,39 @@ __END__
 
 =head1 SYNOPSIS
 
-    use Dist::Zilla::Plugin::Test::NewVersion;
-
-    ...
+    # in dist.ini:
+    [Test::NewVersion]
 
 =head1 DESCRIPTION
 
-...
+This L<Dist::Zilla> plugin generates a release test C<new-version.t>, which
+checks the PAUSE index for latest version of each module, to confirm that
+the version number(s) has been/have been incremented.
 
-=head1 FUNCTIONS/METHODS
+This is mostly useful only for distributions that do not automatically
+increment their version from an external source, e.g.
+L<Dist::Zilla::Plugin::Git::NextVersion>.
 
-=over 4
+It is permitted for a module to have no version number at all, but if it is
+set, it have been incremented from the previous value, as otherwise this case
+would be indistinguisable from developer error (forgetting to increment the
+version), which is what we're testing for.  You can, however, explicitly
+exclude some files from being checked, by passing your own
+L<FileFinder|Dist::Zilla::Role::FileFinderUser/default_finders>.
 
-=item * C<foo>
+=head1 CONFIGURATION
 
-...
+This plugin takes as an optional setting:
 
-=back
+=begin :list
+
+* C<finders> - list the finder(s), one per line, that are to be used for
+finding the modules to test.  Defaults to C<:InstallModules>; other
+pre-defined options are listed in L<FileFinder|Dist::Zilla::Role::FileFinderUser/default_finders>.
+You can define your own with the
+L<Dist::Zilla::Plugin::FileFinder::ByName|[FileFinder::ByName]> plugin.
+
+=end :list
 
 =head1 SUPPORT
 
@@ -127,17 +143,5 @@ __END__
 Bugs may be submitted through L<the RT bug tracker|https://rt.cpan.org/Public/Dist/Display.html?Name=Dist-Zilla-Plugin-Test-NewVersion>
 (or L<bug-Dist-Zilla-Plugin-Test-NewVersion@rt.cpan.org|mailto:bug-Dist-Zilla-Plugin-Test-NewVersion@rt.cpan.org>).
 I am also usually active on irc, as 'ether' at C<irc.perl.org>.
-
-=head1 ACKNOWLEDGEMENTS
-
-...
-
-=head1 SEE ALSO
-
-=begin :list
-
-* L<foo>
-
-=end :list
 
 =cut
