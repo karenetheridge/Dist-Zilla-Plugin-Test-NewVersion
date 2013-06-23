@@ -11,7 +11,11 @@ with
         default_finders => [ ':InstallModules' ],
     },
 ;
-use Data::Section -setup;
+use Sub::Exporter::ForMethods 'method_installer';
+use Data::Section 0.004 # fixed header_re
+    { installer => Sub::Exporter::ForMethods::method_installer },
+    '-setup';
+use namespace::autoclean;
 
 sub gather_files
 {
@@ -107,6 +111,8 @@ __END__
 
 =head1 DESCRIPTION
 
+=for stopwords FileFinder
+
 This L<Dist::Zilla> plugin generates a release test C<new-version.t>, which
 checks the PAUSE index for latest version of each module, to confirm that
 the version number(s) has been/have been incremented.
@@ -117,10 +123,12 @@ L<Dist::Zilla::Plugin::Git::NextVersion>.
 
 It is permitted for a module to have no version number at all, but if it is
 set, it have been incremented from the previous value, as otherwise this case
-would be indistinguisable from developer error (forgetting to increment the
+would be indistinguishable from developer error (forgetting to increment the
 version), which is what we're testing for.  You can, however, explicitly
 exclude some files from being checked, by passing your own
 L<FileFinder|Dist::Zilla::Role::FileFinderUser/default_finders>.
+
+=for Pod::Coverage gather_files
 
 =head1 CONFIGURATION
 
