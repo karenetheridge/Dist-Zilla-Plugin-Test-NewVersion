@@ -71,7 +71,7 @@ increment their version from an external source, e.g.
 L<Dist::Zilla::Plugin::Git::NextVersion>.
 
 It is permitted for a module to have no version number at all, but if it is
-set, it have been incremented from the previous value, as otherwise this case
+set, it must have been incremented from the previous value, as otherwise this case
 would be indistinguishable from developer error (forgetting to increment the
 version), which is what we're testing for.  You can, however, explicitly
 exclude some files from being checked, by passing your own
