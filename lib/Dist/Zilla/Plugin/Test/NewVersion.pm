@@ -10,12 +10,28 @@ with
     'Dist::Zilla::Role::FileFinderUser' => {
         default_finders => [ ':InstallModules' ],
     },
+    'Dist::Zilla::Role::PrereqSource',
 ;
 use Sub::Exporter::ForMethods 'method_installer';
 use Data::Section 0.004 # fixed header_re
     { installer => Sub::Exporter::ForMethods::method_installer },
     '-setup';
 use namespace::autoclean;
+
+sub register_prereqs
+{
+    my $self = shift;
+    $self->zilla->register_prereqs(
+        {
+            type  => 'requires',
+            phase => 'develop',
+        },
+        'Encode' => '0',
+        'LWP::UserAgent' => '0',
+        'JSON' => '0',
+        'Module::Runtime' => '0',
+    );
+}
 
 sub gather_files
 {
@@ -77,7 +93,7 @@ version), which is what we're testing for.  You can, however, explicitly
 exclude some files from being checked, by passing your own
 L<FileFinder|Dist::Zilla::Role::FileFinderUser/default_finders>.
 
-=for Pod::Coverage gather_files
+=for Pod::Coverage register_prereqs gather_files
 
 =head1 CONFIGURATION
 

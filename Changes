@@ -2,6 +2,7 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
           - fix pod munging
+          - modules used by the test are injected as develop requires
 
 0.001     2013-06-23 12:09:18 PDT-0700 (Karen Etheridge)
           - Initial release.
