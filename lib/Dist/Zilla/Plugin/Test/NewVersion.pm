@@ -42,13 +42,11 @@ sub gather_files
     # generate $filename with $content...
 
     require Module::Metadata;
-    require Dist::Zilla::File::FromCode;
-
-    my @files = @{ $self->found_files };
     my @packages = map {
         Module::Metadata->new_from_file($_->name)->name
-    } @files;
+    } @{ $self->found_files };
 
+    require Dist::Zilla::File::FromCode;
     my $file  = Dist::Zilla::File::FromCode->new({
         name => $filename,
         code => sub {
