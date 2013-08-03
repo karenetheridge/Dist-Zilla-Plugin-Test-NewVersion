@@ -50,21 +50,20 @@ sub gather_files
     } @{ $self->found_files };
 
     require Dist::Zilla::File::FromCode;
-    my $file  = Dist::Zilla::File::FromCode->new({
-        name => $filename,
-        code => sub {
-            my $content = $self->fill_in_string(
-                ${$self->section_data($filename)},
-                {
-                    dist => \($self->zilla),
-                    packages => \@packages,
-                },
-            );
-            $content;
-        },
-    });
-
-    $self->add_file($file);
+    $self->add_file(
+        Dist::Zilla::File::FromCode->new({
+            name => $filename,
+            code => sub {
+                $self->fill_in_string(
+                    ${$self->section_data($filename)},
+                    {
+                        dist => \($self->zilla),
+                        packages => \@packages,
+                    },
+                );
+            },
+        })
+    );
     return;
 }
 
