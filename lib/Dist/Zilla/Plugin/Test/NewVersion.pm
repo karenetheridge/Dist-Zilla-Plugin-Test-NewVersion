@@ -35,19 +35,25 @@ sub register_prereqs
     );
 }
 
+has _test_file => (
+    is => 'ro', isa => 'Dist::Zilla::File::InMemory',
+    lazy => 1,
+    default => sub {
+        my $self = shift;
+        my $filename = 'xt/release/new-version.t';
+        use Dist::Zilla::File::InMemory;
+        Dist::Zilla::File::InMemory->new({
+            name => $filename,
+            content => ${$self->section_data($filename)},
+        });
+    },
+);
+
 sub gather_files
 {
     my $self = shift;
 
-    my $filename = 'xt/release/new-version.t';
-
-    require Dist::Zilla::File::InMemory;
-    $self->add_file(
-        Dist::Zilla::File::InMemory->new({
-            name => $filename,
-            content => ${$self->section_data($filename)},
-        })
-    );
+    $self->add_file($self->_test_file);
     return;
 }
 
@@ -55,8 +61,8 @@ sub munge_file
 {
     my ($self, $file) = @_;
 
-    # cannot check full name, as the file may have been moved by [ExtraTests].
-    return unless $file->name =~ /\bnew-version.t$/;
+    # cannot check $file by name, as the file may have been moved by [ExtraTests].
+    return unless $file eq $self->_test_file;
 
     require Module::Metadata;
     my @packages = map {
@@ -76,6 +82,7 @@ sub munge_file
     );
     return;
 }
+1;
 
 =pod
 
