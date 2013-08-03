@@ -26,6 +26,7 @@ sub register_prereqs
             type  => 'requires',
             phase => 'develop',
         },
+        'Test::More' => '0.88',
         'Encode' => '0',
         'LWP::UserAgent' => '0',
         'JSON' => '0',
