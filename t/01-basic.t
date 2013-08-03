@@ -4,7 +4,6 @@ use warnings FATAL => 'all';
 use Test::More;
 use Test::Warnings;
 use Dist::Zilla::Tester;
-use Cwd 'getcwd';
 use Path::Tiny;
 
 # build fake dist
@@ -13,11 +12,8 @@ my $tzil = Dist::Zilla::Tester->from_config({
 });
 $tzil->build;
 
-my $orig_dir = getcwd;
-
 my $build_dir = $tzil->tempdir->subdir('build');
-chdir $build_dir;
-my $file = path('xt', 'release', 'new-version.t');
+my $file = path($build_dir, 'xt', 'release', 'new-version.t');
 ok( -e $file, 'test created');
 
 my $contents = $file->slurp;
@@ -30,6 +26,5 @@ unshift @INC, $new_lib;
 subtest "running $new_lib..." => sub {
     do $file;
 };
-chdir $orig_dir;
 
 done_testing;
