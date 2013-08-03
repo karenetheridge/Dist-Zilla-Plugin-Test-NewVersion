@@ -8,7 +8,7 @@ use Path::Tiny;
 
 # build fake dist
 my $tzil = Dist::Zilla::Tester->from_config({
-    dist_root => path(qw(t corpus)),
+    dist_root => path(qw(t corpus basic)),
 });
 $tzil->build;
 
