@@ -6,6 +6,7 @@ package Dist::Zilla::Plugin::Test::NewVersion;
 use Moose;
 with
     'Dist::Zilla::Role::FileGatherer',
+    'Dist::Zilla::Role::FileMunger',
     'Dist::Zilla::Role::TextTemplate',
     'Dist::Zilla::Role::FileFinderUser' => {
         default_finders => [ ':InstallModules' ],
@@ -40,7 +41,22 @@ sub gather_files
 
     my $filename = 'xt/release/new-version.t';
 
-    # generate $filename with $content...
+    require Dist::Zilla::File::InMemory;
+    $self->add_file(
+        Dist::Zilla::File::InMemory->new({
+            name => $filename,
+            content => ${$self->section_data($filename)},
+        })
+    );
+    return;
+}
+
+sub munge_file
+{
+    my ($self, $file) = @_;
+
+    # cannot check full name, as the file may have been moved by [ExtraTests].
+    return unless $file->name =~ /\bnew-version.t$/;
 
     require Module::Metadata;
     my @packages = map {
@@ -49,20 +65,14 @@ sub gather_files
         Module::Metadata->new_from_handle($fh, $_->name)->name
     } @{ $self->found_files };
 
-    require Dist::Zilla::File::FromCode;
-    $self->add_file(
-        Dist::Zilla::File::FromCode->new({
-            name => $filename,
-            code => sub {
-                $self->fill_in_string(
-                    ${$self->section_data($filename)},
-                    {
-                        dist => \($self->zilla),
-                        packages => \@packages,
-                    },
-                );
+    $file->content(
+        $self->fill_in_string(
+            $file->content,
+            {
+                dist => \($self->zilla),
+                packages => \@packages,
             },
-        })
+        )
     );
     return;
 }
@@ -93,7 +103,7 @@ version), which is what we're testing for.  You can, however, explicitly
 exclude some files from being checked, by passing your own
 L<FileFinder|Dist::Zilla::Role::FileFinderUser/default_finders>.
 
-=for Pod::Coverage register_prereqs gather_files
+=for Pod::Coverage register_prereqs gather_files munge_file
 
 =head1 CONFIGURATION
 
