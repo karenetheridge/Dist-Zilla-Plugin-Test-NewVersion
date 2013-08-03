@@ -43,7 +43,9 @@ sub gather_files
 
     require Module::Metadata;
     my @packages = map {
-        Module::Metadata->new_from_file($_->name)->name
+        open my $fh, '<', \( $_->content )
+            or die 'Cannot create scalarref fh to read from ', $_->name, ": $!";
+        Module::Metadata->new_from_handle($fh, $_->name)->name
     } @{ $self->found_files };
 
     require Dist::Zilla::File::FromCode;
