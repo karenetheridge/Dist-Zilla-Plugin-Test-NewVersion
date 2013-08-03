@@ -26,8 +26,10 @@ like($file->slurp, qr/q{$_}/, "test checks the $_ module") foreach qw(Foo Bar);
 # run the tests
 my $new_lib = path($build_dir, 'lib')->stringify;
 unshift @INC, $new_lib;
-note "running $new_lib...";
-do $file;
+
+subtest "running $new_lib..." => sub {
+    do $file;
+};
 chdir $orig_dir;
 
 done_testing;

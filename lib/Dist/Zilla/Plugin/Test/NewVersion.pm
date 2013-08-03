@@ -124,6 +124,7 @@ ___[ xt/release/new-version.t ]___
 use strict;
 use warnings FATAL => 'all';
 
+use Test::More 0.88;
 use Encode;
 use LWP::UserAgent;
 use JSON;
@@ -168,4 +169,6 @@ foreach my $pkg (
     ok($bumped, $pkg . ' version is greater than version in index');
     note $message if $message;
 }
+
+done_testing;
 __END__

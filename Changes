@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+          - now properly using Test::More and setting a plan (doh!)
 
 0.002     2013-07-17 11:40:24 PDT-0700 (Karen Etheridge)
           - fix pod munging
