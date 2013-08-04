@@ -4,7 +4,7 @@ Dist::Zilla::Plugin::Test::NewVersion - Generate a test that checks a new versio
 
 # VERSION
 
-version 0.003
+version 0.004
 
 # SYNOPSIS
 
