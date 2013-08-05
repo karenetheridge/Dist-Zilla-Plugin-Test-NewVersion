@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.005     2013-08-04 22:59:22 PDT-0700 (Karen Etheridge)
           - fix wrong-headed test that will *always* fail when testing this
             distribution after the PAUSE index has updated (double doh!)
 
