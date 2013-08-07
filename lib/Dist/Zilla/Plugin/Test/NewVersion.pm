@@ -15,8 +15,7 @@ with
 ;
 use Sub::Exporter::ForMethods 'method_installer';
 use Data::Section 0.004 # fixed header_re
-    { installer => Sub::Exporter::ForMethods::method_installer },
-    '-setup';
+    { installer => method_installer }, '-setup';
 use namespace::autoclean;
 
 sub register_prereqs
