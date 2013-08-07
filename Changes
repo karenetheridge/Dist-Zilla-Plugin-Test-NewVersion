@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+          - now properly injecting prereqs for things used by our tests that
+            were not being picked up automatically
 
 0.006-TRIAL  2013-08-05 21:52:05 PDT-0700 (Karen Etheridge)
           - dev release with more detailed test description to see why many
