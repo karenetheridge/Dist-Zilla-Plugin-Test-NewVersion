@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.007     2013-08-06 21:05:04 PDT-0700 (Karen Etheridge)
           - now properly injecting prereqs for things used by our tests that
             were not being picked up automatically
           - fix broken tests by more sensibly picking a module to simulate a
