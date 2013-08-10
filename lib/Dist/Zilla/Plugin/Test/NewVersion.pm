@@ -155,33 +155,32 @@ sub version_is_bumped
     $ua->env_proxy;
 
     my $res = $ua->get("http://cpanidx.org/cpanidx/json/mod/$pkg");
-    unless ($res->is_success) {
-        return (1, $pkg . ' not found in index - first release, perhaps?');
-    }
+    return (0, 'index could not be queried?') if not $res->is_success;
 
     # JSON wants UTF-8 bytestreams, so we need to re-encode no matter what
     # encoding we got. -- rjbs, 2011-08-18 (in Dist::Zilla)
     my $json_octets = Encode::encode_utf8($res->decoded_content);
     my $payload = JSON::->new->decode($json_octets);
 
-    unless (\@$payload) {
-        return (0, 'no valid JSON returned');
-    }
+    return (0, 'no valid JSON returned') unless \@$payload;
 
     my $filename = path('lib', module_notional_filename($pkg));
     if (not -e $filename)
     {
-        diag "package $pkg has no associated $filename file?";
-        return (1);
+        diag 'package ' . $pkg . ' has no associated ' . $filename . ' file?';
+        return (1, "package $pkg has no associated $filename file");
     }
 
-    my $current_version = use_module($pkg)->VERSION;
-    return (0, $pkg . ' version is not set') if not defined $current_version;
+    return (1, 'not indexed') if not defined $payload->[0]{mod_vers};
 
     my $indexed_version = version->parse($payload->[0]{mod_vers});
-    return (1) if $indexed_version < $current_version;
+    my $current_version = use_module($pkg)->VERSION;
+    return (0, 'VERSION is not set; indexed version is ' . $indexed_version) if not defined $current_version;
 
-    return (0, $pkg . ' is indexed at ' . $indexed_version . '; local version is ' . $current_version);
+    return (
+        $indexed_version < $current_version,
+        'indexed at ' . $indexed_version . '; local version is ' . $current_version,
+    );
 }
 
 foreach my $pkg (
@@ -189,7 +188,7 @@ foreach my $pkg (
 )
 {
     my ($bumped, $message) = version_is_bumped($pkg);
-    ok($bumped, $pkg . ' version is greater than version in index'
+    ok($bumped, $pkg . ' VERSION is ok'
         . ( $message ? (' (' . $message . ')') : '' )
     );
 }
