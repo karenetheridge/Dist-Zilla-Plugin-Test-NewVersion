@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+          - now gracefully skipping packages with no associated .pm file (such
+            as .pod files)
 
 0.007     2013-08-06 21:05:04 PDT-0700 (Karen Etheridge)
           - now properly injecting prereqs for things used by our tests that

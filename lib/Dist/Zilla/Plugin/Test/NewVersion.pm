@@ -144,7 +144,7 @@ use Test::More 0.88;
 use Encode;
 use LWP::UserAgent;
 use JSON;
-use Module::Runtime 'use_module';
+use Module::Runtime qw(use_module module_notional_filename);
 
 # returns bool, detailed message
 sub version_is_bumped
@@ -166,6 +166,13 @@ sub version_is_bumped
 
     unless (\@$payload) {
         return (0, 'no valid JSON returned');
+    }
+
+    my $filename = path('lib', module_notional_filename($pkg));
+    if (not -e $filename)
+    {
+        diag "package $pkg has no associated $filename file?";
+        return (1);
     }
 
     my $current_version = use_module($pkg)->VERSION;

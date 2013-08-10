@@ -5,6 +5,7 @@ use Test::More;
 use Test::Warnings;
 use Dist::Zilla::Tester;
 use Path::Tiny;
+use Cwd 'getcwd';
 
 # build fake dist
 my $tzil = Dist::Zilla::Tester->from_config({
@@ -20,6 +21,10 @@ my $contents = $file->slurp;
 like($file->slurp, qr/q{\Q$_\E}/, "test checks the $_ module") foreach qw(Foo ExtUtils::MakeMaker);
 
 # run the tests
+
+my $cwd = getcwd;
+chdir $build_dir;
+
 my $new_lib = path($build_dir, 'lib')->stringify;
 unshift @INC, $new_lib;
 
@@ -27,4 +32,5 @@ subtest "running $new_lib..." => sub {
     do $file;
 };
 
+chdir $cwd;
 done_testing;

@@ -9,7 +9,7 @@ use Cwd 'getcwd';
 
 # build fake dist
 my $tzil = Dist::Zilla::Tester->from_config({
-    dist_root => path(qw(t corpus basic)),
+    dist_root => path(qw(t corpus pod)),
 });
 $tzil->build;
 
@@ -18,7 +18,7 @@ my $file = path($build_dir, 'xt', 'release', 'new-version.t');
 ok( -e $file, 'test created');
 
 my $contents = $file->slurp;
-like($file->slurp, qr/q{\Q$_\E}/, "test checks the $_ module") foreach qw(Foo Bar::Baz);
+like($file->slurp, qr/q{\Q$_\E}/, "test checks the $_ module") foreach qw(Foo Bar);
 
 # run the tests
 
