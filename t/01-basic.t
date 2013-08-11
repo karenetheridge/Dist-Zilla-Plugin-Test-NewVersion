@@ -44,6 +44,7 @@ subtest "running $new_lib..." => sub {
         }
 
         do $file;
+        diag "got error: $@\n" if $@;
     });
 
     # this somewhat redundant test allows an easier way of seeing which tests failed

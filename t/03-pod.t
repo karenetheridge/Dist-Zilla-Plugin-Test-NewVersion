@@ -30,6 +30,7 @@ unshift @INC, $new_lib;
 
 subtest "running $new_lib..." => sub {
     do $file;
+    diag "got error: $@\n" if $@;
 };
 
 chdir $cwd;
