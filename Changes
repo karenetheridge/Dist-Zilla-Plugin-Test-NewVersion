@@ -4,6 +4,8 @@ Revision history for {{$dist->name}}
           - now properly handle .pod files, and others where the package name
             does not directly correspond with the equivalent .pm, by testing
             by filename rather than package name
+          - now correctly handling case where an indexed module has an undef
+            version (always documented as considered acceptable)
 
 0.007     2013-08-06 21:05:04 PDT-0700 (Karen Etheridge)
           - now properly injecting prereqs for things used by our tests that

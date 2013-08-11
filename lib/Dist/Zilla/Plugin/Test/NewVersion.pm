@@ -158,6 +158,7 @@ sub version_is_bumped
     return (0, 'no valid JSON returned') unless \@$payload;
 
     return (1, 'not indexed') if not defined $payload->[0]{mod_vers};
+    return (1, 'VERSION is not set in index') if $payload->[0]{mod_vers} eq 'undef';
 
     my $indexed_version = version->parse($payload->[0]{mod_vers});
     my $current_version = $metadata->version($pkg);
