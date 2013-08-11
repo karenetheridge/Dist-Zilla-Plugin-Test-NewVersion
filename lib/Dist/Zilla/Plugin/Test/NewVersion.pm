@@ -30,7 +30,7 @@ sub register_prereqs
         'Encode' => '0',
         'LWP::UserAgent' => '0',
         'JSON' => '0',
-        'Module::Runtime' => '0',
+        'Module::Metadata' => '0',
     );
 }
 
@@ -63,19 +63,12 @@ sub munge_file
     # cannot check $file by name, as the file may have been moved by [ExtraTests].
     return unless $file eq $self->_test_file;
 
-    require Module::Metadata;
-    my @packages = map {
-        open my $fh, '<', \( $_->content )
-            or die 'Cannot create scalarref fh to read from ', $_->name, ": $!";
-        Module::Metadata->new_from_handle($fh, $_->name)->name
-    } @{ $self->found_files };
-
     $file->content(
         $self->fill_in_string(
             $file->content,
             {
                 dist => \($self->zilla),
-                packages => \@packages,
+                files => [ map { $_->name } @{ $self->found_files } ],
             },
         )
     );
@@ -144,12 +137,12 @@ use Test::More 0.88;
 use Encode;
 use LWP::UserAgent;
 use JSON;
-use Module::Runtime qw(use_module module_notional_filename);
+use Module::Metadata;
 
 # returns bool, detailed message
 sub version_is_bumped
 {
-    my $pkg = shift;
+    my ($metadata, $pkg) = @_;
 
     my $ua = LWP::UserAgent->new(keep_alive => 1);
     $ua->env_proxy;
@@ -164,17 +157,10 @@ sub version_is_bumped
 
     return (0, 'no valid JSON returned') unless \@$payload;
 
-    my $filename = path('lib', module_notional_filename($pkg));
-    if (not -e $filename)
-    {
-        diag 'package ' . $pkg . ' has no associated ' . $filename . ' file?';
-        return (1, "package $pkg has no associated $filename file");
-    }
-
     return (1, 'not indexed') if not defined $payload->[0]{mod_vers};
 
     my $indexed_version = version->parse($payload->[0]{mod_vers});
-    my $current_version = use_module($pkg)->VERSION;
+    my $current_version = $metadata->version($pkg);
     return (0, 'VERSION is not set; indexed version is ' . $indexed_version) if not defined $current_version;
 
     return (
@@ -183,14 +169,18 @@ sub version_is_bumped
     );
 }
 
-foreach my $pkg (
-{{ join(",\n", map { '    q{' . $_ . '}' } @packages) }}
+foreach my $filename (
+{{ join(",\n", map { '    q{' . $_ . '}' } @files) }}
 )
 {
-    my ($bumped, $message) = version_is_bumped($pkg);
-    ok($bumped, $pkg . ' VERSION is ok'
-        . ( $message ? (' (' . $message . ')') : '' )
-    );
+    my $metadata = Module::Metadata->new_from_file($filename);
+    foreach my $pkg ($metadata->packages_inside)
+    {
+        my ($bumped, $message) = version_is_bumped($metadata, $pkg);
+        ok($bumped, $pkg . ' (' . $filename . ') VERSION is ok'
+            . ( $message ? (' (' . $message . ')') : '' )
+        );
+    }
 }
 
 done_testing;

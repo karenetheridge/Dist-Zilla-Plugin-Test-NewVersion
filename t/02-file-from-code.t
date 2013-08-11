@@ -18,7 +18,7 @@ my $file = path($build_dir, 'xt', 'release', 'new-version.t');
 ok( -e $file, 'test created');
 
 my $contents = $file->slurp;
-like($file->slurp, qr/q{\Q$_\E}/, "test checks the $_ module") foreach qw(Foo ExtUtils::MakeMaker);
+like($file->slurp, qr/q{\Q$_\E}/, "test checks the $_ module") foreach qw(lib/Foo.pm lib/ExtUtils/MakeMaker.pm);
 
 # run the tests
 
