@@ -6,6 +6,8 @@ Revision history for {{$dist->name}}
             by filename rather than package name
           - now correctly handling case where an indexed module has an undef
             version (always documented as considered acceptable)
+          - also respect 'provides' metadata for the module's new version, if
+            present and VERSION not set directly in the package
 
 0.007     2013-08-06 21:05:04 PDT-0700 (Karen Etheridge)
           - now properly injecting prereqs for things used by our tests that

@@ -9,6 +9,9 @@ use Path::Tiny;
 use Cwd 'getcwd';
 use Test::Deep;
 
+# let us find our inc/ dir
+unshift @INC, 't/corpus/basic';
+
 # build fake dist
 my $tzil = Dist::Zilla::Tester->from_config({
     dist_root => path(qw(t corpus basic)),
@@ -25,6 +28,7 @@ like($file->slurp, qr/q{\Q$_\E}/, "test checks the $_ module") foreach qw(
     lib/Bar/Baz.pm
     lib/Plack/Test.pm
     lib/Moose.pm
+    lib/Moose/Cookbook.pod
 );
 
 # run the tests
@@ -43,6 +47,10 @@ subtest "running $new_lib..." => sub {
             sub in_subtest { 1 }
         }
 
+        # Test::Tester cannot handle calls to done_testing?!
+        no warnings 'redefine';
+        local *Test::Builder::done_testing = sub { };
+
         do $file;
         diag "got error: $@\n" if $@;
     });
@@ -56,9 +64,11 @@ subtest "running $new_lib..." => sub {
             'Plack::Test (lib/Plack/Test.pm) VERSION is ok (VERSION is not set in index)',
             re(qr{^Moose \(lib/Moose\.pm\) VERSION is ok \(VERSION is not set; indexed version is \d.\d+\)$}),
             re(qr{^ExtUtils::MakeMaker \(lib/ExtUtils\/MakeMaker\.pm\) VERSION is ok \(indexed at \d.\d+; local version is 100\.0\)$}),
+            re(qr{^Moose::Cookbook \(lib/Moose\/Cookbook\.pod\) VERSION is ok \(indexed at \d.\d+; local version is 20\.0\)$}),
         ),
         'expected tests ran',
-    );
+    )
+    or diag('ran tests: ', do { require Data::Dumper; Data::Dumper::Dumper([map { $_->{name} } @results ]) });
 
     cmp_deeply(
         \@results,
@@ -85,6 +95,11 @@ subtest "running $new_lib..." => sub {
             }),
             superhashof({
                 name => re(qr{^ExtUtils::MakeMaker \(lib/ExtUtils\/MakeMaker\.pm\) VERSION is ok \(indexed at \d.\d+; local version is 100\.0\)$}),
+                ok => 1, actual_ok => 1,
+                depth => 2, type => '', diag => '',
+            }),
+            superhashof({
+                name => re(qr{^Moose::Cookbook \(lib/Moose\/Cookbook\.pod\) VERSION is ok \(indexed at \d.\d+; local version is 20\.0\)$}),
                 ok => 1, actual_ok => 1,
                 depth => 2, type => '', diag => '',
             }),

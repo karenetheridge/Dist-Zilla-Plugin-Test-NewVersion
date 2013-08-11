@@ -31,6 +31,8 @@ sub register_prereqs
         'LWP::UserAgent' => '0',
         'JSON' => '0',
         'Module::Metadata' => '0',
+        'List::Util' => '0',
+        'CPAN::Meta' => '2.120920',
     );
 }
 
@@ -138,11 +140,16 @@ use Encode;
 use LWP::UserAgent;
 use JSON;
 use Module::Metadata;
+use List::Util 'first';
+use CPAN::Meta 2.120920;
+
+# 'provides' field from dist metadata, if needed
+my $dist_provides;
 
 # returns bool, detailed message
 sub version_is_bumped
 {
-    my ($metadata, $pkg) = @_;
+    my ($module_metadata, $pkg) = @_;
 
     my $ua = LWP::UserAgent->new(keep_alive => 1);
     $ua->env_proxy;
@@ -161,8 +168,20 @@ sub version_is_bumped
     return (1, 'VERSION is not set in index') if $payload->[0]{mod_vers} eq 'undef';
 
     my $indexed_version = version->parse($payload->[0]{mod_vers});
-    my $current_version = $metadata->version($pkg);
-    return (0, 'VERSION is not set; indexed version is ' . $indexed_version) if not defined $current_version;
+    my $current_version = $module_metadata->version($pkg);
+
+    if (not defined $current_version)
+    {
+        $dist_provides ||= do {
+            my $metafile = first { -e $_ } qw(MYMETA.json MYMETA.yml META.json META.yml);
+            my $dist_metadata = $metafile ? CPAN::Meta->load_file($metafile) : undef;
+            $dist_metadata->provides if $dist_metadata;
+        };
+
+        $current_version = $dist_provides->{$pkg}{version};
+        return (0, 'VERSION is not set; indexed version is ' . $indexed_version)
+            if not $dist_provides or not $current_version;
+    }
 
     return (
         $indexed_version < $current_version,
@@ -174,10 +193,10 @@ foreach my $filename (
 {{ join(",\n", map { '    q{' . $_ . '}' } @files) }}
 )
 {
-    my $metadata = Module::Metadata->new_from_file($filename);
-    foreach my $pkg ($metadata->packages_inside)
+    my $module_metadata = Module::Metadata->new_from_file($filename);
+    foreach my $pkg ($module_metadata->packages_inside)
     {
-        my ($bumped, $message) = version_is_bumped($metadata, $pkg);
+        my ($bumped, $message) = version_is_bumped($module_metadata, $pkg);
         ok($bumped, $pkg . ' (' . $filename . ') VERSION is ok'
             . ( $message ? (' (' . $message . ')') : '' )
         );
