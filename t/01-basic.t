@@ -59,33 +59,33 @@ subtest "running $new_lib..." => sub {
     # this somewhat redundant test allows an easier way of seeing which tests failed
     cmp_deeply(
         [ map { $_->{name} } @results ],
-        bag(
-            'Foo (lib/Foo.pm) VERSION is ok (not indexed)',
+        [
             'Bar::Baz (lib/Bar/Baz.pm) VERSION is ok (not indexed)',
-            'Plack::Test (lib/Plack/Test.pm) VERSION is ok (VERSION is not set in index)',
-            re(qr{^Moose \(lib/Moose\.pm\) VERSION is ok \(VERSION is not set; indexed version is \d.\d+\)$}),
             re(qr{^ExtUtils::MakeMaker \(lib/ExtUtils\/MakeMaker\.pm\) VERSION is ok \(indexed at \d.\d+; local version is 100\.0\)$}),
+            'Foo (lib/Foo.pm) VERSION is ok (not indexed)',
+            re(qr{^Moose \(lib/Moose\.pm\) VERSION is ok \(VERSION is not set; indexed version is \d.\d+\)$}),
             re(qr{^Moose::Cookbook \(lib/Moose\/Cookbook\.pod\) VERSION is ok \(indexed at \d.\d+; local version is 20\.0\)$}),
-        ),
+            'Plack::Test (lib/Plack/Test.pm) VERSION is ok (VERSION is not set in index)',
+        ],
         'expected tests ran',
     )
     or diag('ran tests: ', do { require Data::Dumper; Data::Dumper::Dumper([map { $_->{name} } @results ]) });
 
     cmp_deeply(
         \@results,
-        bag(
-            superhashof({
-                name => 'Foo (lib/Foo.pm) VERSION is ok (not indexed)',
-                ok => 1, actual_ok => 1,
-                depth => 2, type => '', diag => '',
-            }),
+        [
             superhashof({
                 name => 'Bar::Baz (lib/Bar/Baz.pm) VERSION is ok (not indexed)',
                 ok => 1, actual_ok => 1,
                 depth => 2, type => '', diag => '',
             }),
             superhashof({
-                name => 'Plack::Test (lib/Plack/Test.pm) VERSION is ok (VERSION is not set in index)',
+                name => re(qr{^ExtUtils::MakeMaker \(lib/ExtUtils\/MakeMaker\.pm\) VERSION is ok \(indexed at \d.\d+; local version is 100\.0\)$}),
+                ok => 1, actual_ok => 1,
+                depth => 2, type => '', diag => '',
+            }),
+            superhashof({
+                name => 'Foo (lib/Foo.pm) VERSION is ok (not indexed)',
                 ok => 1, actual_ok => 1,
                 depth => 2, type => '', diag => '',
             }),
@@ -95,16 +95,16 @@ subtest "running $new_lib..." => sub {
                 depth => 2, type => '', diag => '',
             }),
             superhashof({
-                name => re(qr{^ExtUtils::MakeMaker \(lib/ExtUtils\/MakeMaker\.pm\) VERSION is ok \(indexed at \d.\d+; local version is 100\.0\)$}),
-                ok => 1, actual_ok => 1,
-                depth => 2, type => '', diag => '',
-            }),
-            superhashof({
                 name => re(qr{^Moose::Cookbook \(lib/Moose\/Cookbook\.pod\) VERSION is ok \(indexed at \d.\d+; local version is 20\.0\)$}),
                 ok => 1, actual_ok => 1,
                 depth => 2, type => '', diag => '',
             }),
-        ),
+            superhashof({
+                name => 'Plack::Test (lib/Plack/Test.pm) VERSION is ok (VERSION is not set in index)',
+                ok => 1, actual_ok => 1,
+                depth => 2, type => '', diag => '',
+            }),
+        ],
         'our expected tests ran correctly',
     );
 };

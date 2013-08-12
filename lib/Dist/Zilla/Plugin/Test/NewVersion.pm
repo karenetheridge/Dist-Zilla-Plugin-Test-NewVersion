@@ -192,7 +192,7 @@ sub version_is_bumped
 }
 
 foreach my $filename (
-{{ join(",\n", map { '    "' . quotemeta($_) . '"' } @files) }}
+{{ join(",\n", map { '    "' . quotemeta($_) . '"' } sort @files) }}
 )
 {
     my $module_metadata = Module::Metadata->new_from_file($filename);
