@@ -23,13 +23,14 @@ my $file = path($build_dir, 'xt', 'release', 'new-version.t');
 ok( -e $file, 'test created');
 
 my $contents = $file->slurp;
-like($file->slurp, qr/q{\Q$_\E}/, "test checks the $_ module") foreach qw(
-    lib/Foo.pm
-    lib/Bar/Baz.pm
-    lib/Plack/Test.pm
-    lib/Moose.pm
-    lib/Moose/Cookbook.pod
-);
+like($file->slurp, qr/"\Q$_\E"/, "test checks the $_ module")
+    foreach map { quotemeta } qw(
+        lib/Foo.pm
+        lib/Bar/Baz.pm
+        lib/Plack/Test.pm
+        lib/Moose.pm
+        lib/Moose/Cookbook.pod
+    );
 
 # run the tests
 

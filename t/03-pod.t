@@ -18,7 +18,11 @@ my $file = path($build_dir, 'xt', 'release', 'new-version.t');
 ok( -e $file, 'test created');
 
 my $contents = $file->slurp;
-like($file->slurp, qr/q{\Q$_\E}/, "test checks $_") foreach qw(lib/Foo.pm lib/Bar.pod);
+like($file->slurp, qr/"\Q$_\E"/, "test checks $_")
+    foreach map { quotemeta } qw(
+        lib/Foo.pm
+        lib/Bar.pod
+    );
 
 # run the tests
 

@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+          - now properly handling filenames with special characters
 
 0.008     2013-08-11 12:56:58 PDT-0700 (Karen Etheridge)
           - now properly handle .pod files, and others where the package name
