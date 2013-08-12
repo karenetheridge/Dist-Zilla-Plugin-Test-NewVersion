@@ -28,7 +28,7 @@ sub register_prereqs
         },
         'Test::More' => '0.88',
         'Encode' => '0',
-        'LWP::UserAgent' => '0',
+        'HTTP::Tiny' => '0',
         'JSON' => '0',
         'version' => '0',
         'Module::Metadata' => '0',
@@ -138,7 +138,7 @@ use warnings FATAL => 'all';
 
 use Test::More 0.88;
 use Encode;
-use LWP::UserAgent;
+use HTTP::Tiny;
 use JSON;
 use version;
 use Module::Metadata;
@@ -153,15 +153,12 @@ sub version_is_bumped
 {
     my ($module_metadata, $pkg) = @_;
 
-    my $ua = LWP::UserAgent->new(keep_alive => 1);
-    $ua->env_proxy;
-
-    my $res = $ua->get("http://cpanidx.org/cpanidx/json/mod/$pkg");
-    return (0, 'index could not be queried?') if not $res->is_success;
+    my $res = HTTP::Tiny->new->get("http://cpanidx.org/cpanidx/json/mod/$pkg");
+    return (0, 'index could not be queried?') if not $res->{success};
 
     # JSON wants UTF-8 bytestreams, so we need to re-encode no matter what
     # encoding we got. -- rjbs, 2011-08-18 (in Dist::Zilla)
-    my $json_octets = Encode::encode_utf8($res->decoded_content);
+    my $json_octets = Encode::encode_utf8($res->{content});
     my $payload = JSON::->new->decode($json_octets);
 
     return (0, 'no valid JSON returned') unless \@$payload;
