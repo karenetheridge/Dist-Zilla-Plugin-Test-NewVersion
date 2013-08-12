@@ -30,6 +30,7 @@ sub register_prereqs
         'Encode' => '0',
         'LWP::UserAgent' => '0',
         'JSON' => '0',
+        'version' => '0',
         'Module::Metadata' => '0',
         'List::Util' => '0',
         'CPAN::Meta' => '2.120920',
@@ -139,6 +140,7 @@ use Test::More 0.88;
 use Encode;
 use LWP::UserAgent;
 use JSON;
+use version;
 use Module::Metadata;
 use List::Util 'first';
 use CPAN::Meta 2.120920;
