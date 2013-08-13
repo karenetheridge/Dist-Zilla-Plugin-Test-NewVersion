@@ -161,7 +161,7 @@ sub version_is_bumped
     my $json_octets = Encode::encode_utf8($res->{content});
     my $payload = JSON::->new->decode($json_octets);
 
-    return (0, 'no valid JSON returned') unless \@$payload;
+    return (0, 'no valid JSON returned') unless $payload;
 
     return (1, 'not indexed') if not defined $payload->[0]{mod_vers};
     return (1, 'VERSION is not set in index') if $payload->[0]{mod_vers} eq 'undef';
