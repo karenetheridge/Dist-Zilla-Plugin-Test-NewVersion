@@ -3,12 +3,12 @@ use warnings FATAL => 'all';
 
 use Test::More;
 use Test::Warnings;
-use Dist::Zilla::Tester;
+use Test::DZil;
 use Path::Tiny;
 use Cwd 'getcwd';
 
 # build fake dist
-my $tzil = Dist::Zilla::Tester->from_config({
+my $tzil = Builder->from_config({
     dist_root => path(qw(t corpus pod)),
 });
 $tzil->build;

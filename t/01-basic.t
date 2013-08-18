@@ -4,7 +4,7 @@ use warnings FATAL => 'all';
 use Test::Tester 0.108;
 use Test::More;
 use Test::Warnings ':no_end_test';
-use Dist::Zilla::Tester;
+use Test::DZil;
 use Path::Tiny;
 use Cwd 'getcwd';
 use Test::Deep;
@@ -13,7 +13,7 @@ use Test::Deep;
 unshift @INC, 't/corpus/basic';
 
 # build fake dist
-my $tzil = Dist::Zilla::Tester->from_config({
+my $tzil = Builder->from_config({
     dist_root => path(qw(t corpus basic)),
 });
 $tzil->build;
