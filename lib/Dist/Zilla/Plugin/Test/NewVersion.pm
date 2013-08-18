@@ -157,7 +157,8 @@ sub version_is_bumped
     return (0, 'index could not be queried?') if not $res->{success};
 
     # JSON wants UTF-8 bytestreams, so we need to re-encode no matter what
-    # encoding we got. -- rjbs, 2011-08-18 (in Dist::Zilla)
+    # encoding we got. -- rjbs, 2011-08-18 (in
+    # Dist::Zilla::Plugin::CheckPrereqsIndexed)
     my $json_octets = Encode::encode_utf8($res->{content});
     my $payload = JSON::->new->decode($json_octets);
 
