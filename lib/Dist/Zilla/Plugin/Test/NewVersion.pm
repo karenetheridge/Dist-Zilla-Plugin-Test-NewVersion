@@ -71,6 +71,7 @@ sub munge_file
             $file->content,
             {
                 dist => \($self->zilla),
+                plugin => \$self,
                 files => [ map { $_->name } @{ $self->found_files } ],
             },
         )
@@ -141,6 +142,8 @@ I am also usually active on irc, as 'ether' at C<irc.perl.org>.
 
 __DATA__
 ___[ xt/release/new-version.t ]___
+# this test was generated with {{ ref($plugin) . ' ' . $plugin->VERSION }}
+
 use strict;
 use warnings FATAL => 'all';
 
