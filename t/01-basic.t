@@ -3,7 +3,7 @@ use warnings FATAL => 'all';
 
 use Test::Tester 0.108;
 use Test::More;
-use Test::Warnings ':no_end_test';
+use Test::Warnings qw(:all :no_end_test);
 use Test::DZil;
 use Path::Tiny;
 use Cwd 'getcwd';
@@ -111,5 +111,5 @@ subtest "running $new_lib..." => sub {
 
 chdir $cwd;
 
-Test::Warnings::had_no_warnings('no (unexpected) warnings');
+had_no_warnings if $ENV{AUTHOR_TESTING};
 done_testing;
