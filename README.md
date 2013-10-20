@@ -4,7 +4,7 @@ Dist::Zilla::Plugin::Test::NewVersion - Generate a test that checks a new versio
 
 # VERSION
 
-version 0.008
+version 0.009
 
 # SYNOPSIS
 
@@ -44,6 +44,10 @@ This plugin takes as an optional setting:
 Bugs may be submitted through [the RT bug tracker](https://rt.cpan.org/Public/Dist/Display.html?Name=Dist-Zilla-Plugin-Test-NewVersion)
 (or [bug-Dist-Zilla-Plugin-Test-NewVersion@rt.cpan.org](mailto:bug-Dist-Zilla-Plugin-Test-NewVersion@rt.cpan.org)).
 I am also usually active on irc, as 'ether' at `irc.perl.org`.
+
+# SEE ALSO
+
+- [Dist::Zilla::Plugin::CheckVersionIncrement](http://search.cpan.org/perldoc?Dist::Zilla::Plugin::CheckVersionIncrement)
 
 # AUTHOR
 
