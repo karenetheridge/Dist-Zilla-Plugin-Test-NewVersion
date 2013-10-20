@@ -22,8 +22,10 @@ my $build_dir = $tzil->tempdir->subdir('build');
 my $file = path($build_dir, 'xt', 'release', 'new-version.t');
 ok( -e $file, 'test created');
 
-my $contents = $file->slurp;
-like($file->slurp, qr/"\Q$_\E"/, "test checks the $_ module")
+my $content = $file->slurp;
+unlike($content, qr/[^\S\n]\n/m, 'no trailing whitespace in generated test');
+
+like($content, qr/"\Q$_\E"/, "test checks the $_ module")
     foreach map { quotemeta } qw(
         lib/Foo.pm
         lib/Bar/Baz.pm

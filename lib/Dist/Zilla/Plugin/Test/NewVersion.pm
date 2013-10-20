@@ -142,7 +142,7 @@ I am also usually active on irc, as 'ether' at C<irc.perl.org>.
 
 __DATA__
 ___[ xt/release/new-version.t ]___
-# this test was generated with {{ ref($plugin) . ' ' . $plugin->VERSION }}
+# this test was generated with {{ ref($plugin) . ' ' . ($plugin->VERSION || '<self>') }}
 
 use strict;
 use warnings FATAL => 'all';
