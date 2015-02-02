@@ -1,9 +1,6 @@
+/.ackrc
 /.build/
 !.gitignore
-/cover_db/
-/test-mydeps-*
-/nytprof*
-/Dist-Zilla-Plugin-Test-NewVersion-*
-/todo.txt
-/todo/
-/tmp/
+/.latest
+/Dist-Zilla-Plugin-Test-NewVersion-*/
+/Dist-Zilla-Plugin-Test-NewVersion-*.tar.gz
