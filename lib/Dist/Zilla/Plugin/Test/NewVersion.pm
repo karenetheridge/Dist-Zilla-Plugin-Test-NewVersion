@@ -145,7 +145,7 @@ ___[ xt/release/new-version.t ]___
 # this test was generated with {{ ref($plugin) . ' ' . ($plugin->VERSION || '<self>') }}
 
 use strict;
-use warnings FATAL => 'all';
+use warnings;
 
 use Test::More 0.88;
 use Encode;
