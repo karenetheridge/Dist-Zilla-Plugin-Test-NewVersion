@@ -29,7 +29,7 @@ sub register_prereqs
         'Test::More' => '0.88',
         'Encode' => '0',
         'HTTP::Tiny' => '0',
-        'JSON' => '0',
+        'JSON::MaybeXS' => '0',
         'version' => '0',
         'Module::Metadata' => '0',
         'List::Util' => '0',
@@ -148,9 +148,9 @@ use strict;
 use warnings;
 
 use Test::More 0.88;
-use Encode;
+use Encode ();
 use HTTP::Tiny;
-use JSON;
+use JSON::MaybeXS;
 use version;
 use Module::Metadata;
 use List::Util 'first';
@@ -167,14 +167,16 @@ sub version_is_bumped
     my $res = HTTP::Tiny->new->get("http://cpanidx.org/cpanidx/json/mod/$pkg");
     return (0, 'index could not be queried?') if not $res->{success};
 
-    # JSON wants UTF-8 bytestreams, so we need to re-encode no matter what
-    # encoding we got. -- rjbs, 2011-08-18 (in
-    # Dist::Zilla::Plugin::CheckPrereqsIndexed)
-    my $json_octets = Encode::encode_utf8($res->{content});
-    my $payload = JSON::->new->decode($json_octets);
+    my $data = $res->{content};
 
-    return (0, 'no valid JSON returned') unless $payload;
+    require HTTP::Headers;
+    if (my $charset = HTTP::Headers->new(%{ $res->{headers} })->content_type_charset)
+    {
+        $data = Encode::decode($charset, $data, Encode::FB_CROAK);
+    }
 
+    my $payload = decode_json($data);
+    return (0, 'invalid payload returned') unless $payload;
     return (1, 'not indexed') if not defined $payload->[0]{mod_vers};
     return (1, 'VERSION is not set in index') if $payload->[0]{mod_vers} eq 'undef';
 
