@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+          - fix tests that fail on newer Test::More due to changes in how
+            depth is calculated when a test file is run inside another test
 
 0.009     2013-10-20 03:12:51Z (Karen Etheridge)
           - now properly handling filenames with special characters
