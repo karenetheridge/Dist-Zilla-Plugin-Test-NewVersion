@@ -2,6 +2,7 @@ use strict;
 use warnings;
 package Dist::Zilla::Plugin::Test::NewVersion;
 # ABSTRACT: Generate a test that checks a new version has been assigned
+# KEYWORDS: plugin test distribution release author version unique new
 
 use Moose;
 with
