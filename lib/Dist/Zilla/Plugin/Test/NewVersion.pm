@@ -113,15 +113,13 @@ L<FileFinder|Dist::Zilla::Role::FileFinderUser/default_finders>.
 
 This plugin takes as an optional setting:
 
-=begin :list
+=for :list
 
 * C<finders> - list the finder(s), one per line, that are to be used for
 finding the modules to test.  Defaults to C<:InstallModules>; other
 pre-defined options are listed in L<FileFinder|Dist::Zilla::Role::FileFinderUser/default_finders>.
 You can define your own with the
 L<Dist::Zilla::Plugin::FileFinder::ByName|[FileFinder::ByName]> plugin.
-
-=end :list
 
 =head1 SUPPORT
 
