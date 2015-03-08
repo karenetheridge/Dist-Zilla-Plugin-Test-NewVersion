@@ -1,6 +1,6 @@
 /.ackrc
 /.build/
-!.gitignore
+!/.gitignore
 /.latest
 /Dist-Zilla-Plugin-Test-NewVersion-*/
 /Dist-Zilla-Plugin-Test-NewVersion-*.tar.gz
